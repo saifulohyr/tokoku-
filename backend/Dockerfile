@@ -6,7 +6,7 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (including devDependencies)
 RUN npm ci
 
 # Copy source code
@@ -14,6 +14,9 @@ COPY . .
 
 # Build the application
 RUN npm run build
+
+# DEBUG: List dist folder to verify build output
+RUN ls -la dist/ || echo "dist folder missing"
 
 # Production stage
 FROM node:20-alpine AS production
@@ -24,10 +27,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm ci --omit=dev --ignore-scripts
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
+
+# DEBUG: List dist folder in production to verify copy
+RUN ls -la dist/
 
 # Expose port
 EXPOSE 3001
