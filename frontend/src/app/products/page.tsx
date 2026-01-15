@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Package, CheckCircle, Star } from "lucide-react";
@@ -16,7 +16,7 @@ import { LiveStockBadge } from "@/components/ui/live-stock-badge";
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/main-layout";
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const { data: products, isLoading, error } = useProducts();
 
   if (isLoading) {
@@ -71,6 +71,26 @@ export default function ProductsPage() {
       )}
     </div>
     </MainLayout>
+  );
+}
+
+// Default export with Suspense boundary
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <MainLayout>
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold mb-8">Produk</h1>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <ProductSkeleton key={i} />
+            ))}
+          </div>
+        </div>
+      </MainLayout>
+    }>
+      <ProductsPageContent />
+    </Suspense>
   );
 }
 
