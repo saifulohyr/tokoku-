@@ -32,5 +32,5 @@ EXPOSE 3001
 # Set environment to production
 ENV NODE_ENV=production
 
-# Start the application with shell to debug if main.js missing again
-CMD ["sh", "-c", "ls -la dist/ && node dist/main.js"]
+# Start the application with smart path detection
+CMD ["sh", "-c", "ls -la dist/ && (if [ -f dist/src/main.js ]; then node dist/src/main.js; else node dist/main.js; fi)"]
