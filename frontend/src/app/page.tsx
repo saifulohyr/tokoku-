@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Package, Star } from "lucide-react";
@@ -10,7 +10,7 @@ import { useProducts } from "@/hooks/use-products";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MainLayout } from "@/components/layout/main-layout";
 
-export default function HomePage() {
+function HomePageContent() {
   const targetRef = useRef(null);
   const { data: products, isLoading } = useProducts();
   const { scrollYProgress } = useScroll({
@@ -277,5 +277,27 @@ export default function HomePage() {
       </section>
 
     </MainLayout>
+  );
+}
+
+// Loading fallback for Suspense
+function HomePageLoading() {
+  return (
+    <MainLayout>
+      <div className="w-full h-[90vh] bg-zinc-900 animate-pulse" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1 p-1">
+        <div className="h-[600px] bg-zinc-100 animate-pulse" />
+        <div className="h-[600px] bg-zinc-100 animate-pulse" />
+      </div>
+    </MainLayout>
+  );
+}
+
+// Default export with Suspense boundary
+export default function HomePage() {
+  return (
+    <Suspense fallback={<HomePageLoading />}>
+      <HomePageContent />
+    </Suspense>
   );
 }
