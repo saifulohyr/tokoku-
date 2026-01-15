@@ -99,7 +99,7 @@ This API implements a **Modular Monolith** architecture with distributed systems
   // ============================================
   // START SERVER
   // ============================================
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`🚀 Application running on http://localhost:${port}`);
   logger.log(`🌐 CORS enabled for: ${corsOrigin}`);
