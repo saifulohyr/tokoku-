@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { 
@@ -81,7 +81,7 @@ function CheckPaymentButton({ orderId }: { orderId: number }) {
   );
 }
 
-export default function OrderDetailsPage() {
+function OrderDetailsContent() {
   const params = useParams();
   const id = Number(params.id);
   const router = useRouter();
@@ -267,5 +267,32 @@ export default function OrderDetailsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading skeleton
+function OrderDetailsSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="mb-6">
+        <Skeleton className="h-8 w-48 mb-2" />
+        <Skeleton className="h-4 w-24" />
+      </div>
+      <Card className="mb-6">
+        <CardContent className="p-6">
+          <Skeleton className="h-24 w-full mb-4" />
+          <Skeleton className="h-24 w-full" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Default export with Suspense boundary
+export default function OrderDetailsPage() {
+  return (
+    <Suspense fallback={<OrderDetailsSkeleton />}>
+      <OrderDetailsContent />
+    </Suspense>
   );
 }

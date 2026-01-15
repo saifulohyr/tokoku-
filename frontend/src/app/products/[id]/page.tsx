@@ -9,9 +9,9 @@ import { ShoppingCart, Star, Truck, ShieldCheck, ArrowLeft, CheckCircle } from "
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-export default function ProductDetailPage() {
+function ProductDetailContent() {
   const router = useRouter();
   const params = useParams();
   const productId = Number(params.id);
@@ -180,5 +180,31 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading skeleton for Suspense
+function ProductDetailSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <Skeleton className="h-8 w-1/3 mb-6" />
+      <div className="grid md:grid-cols-2 gap-8">
+        <Skeleton className="h-[400px] rounded-xl" />
+        <div className="space-y-4">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Default export with Suspense boundary
+export default function ProductDetailPage() {
+  return (
+    <Suspense fallback={<ProductDetailSkeleton />}>
+      <ProductDetailContent />
+    </Suspense>
   );
 }
